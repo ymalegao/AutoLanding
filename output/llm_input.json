@@ -1,0 +1,127 @@
+{
+    "A1": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 0.23478004713275727,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "A2": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 0.15239591516103693,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "A3": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 0.0672623723487824,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "A4": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 17.51983503534957,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "A5": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 11.350157109190887,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "B1": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 0.5653967007069913,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "B2": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 4.45060879811469,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "B3": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 15.104968578161822,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "B4": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 22.229772191673213,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "B5": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 15.446877454831107,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "C1": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 3.97172034564022,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "C2": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 13.215534171249018,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "C3": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 15.468185388845248,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "C4": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 21.771111547525532,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "C5": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 10.08277690494894,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "D1": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 8.005597014925373,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "D2": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 19.55901413982718,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "D3": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 21.96170463472113,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "D4": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 13.687941869599372,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "D5": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 7.962686567164179,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "E1": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 11.77376276512176,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "E2": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 22.61802827965436,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "E3": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 22.131775333857032,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "E4": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 13.664866457187745,
+        "segmentation_objects": "(Segmented Objects List)"
+    },
+    "E5": {
+        "rgb_patch": "(RGB Image Reference)",
+        "depth_info": 11.29958758837392,
+        "segmentation_objects": "(Segmented Objects List)"
+    }
+}
