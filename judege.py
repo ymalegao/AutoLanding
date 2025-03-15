@@ -106,7 +106,7 @@ for scenario in rural_Scenario_names:
 
 
 URBAN_PROMPT = """A quadcopter needs to perform an emergency landing in an urban environment.
-You are provided three images - a Depth Map, a Camera Image, and a Segmentation Map.
+You are provided three images - a Camera Image,  a Segmentation Map, and a Depth Map,
 
 The images are divided into a **7×7 grid (A7 to G7)**.
 
@@ -172,7 +172,7 @@ The images are divided into a 5×5 grid (A1 to E5).
     
 # # Extract and print results
 if __name__ == "__main__":
-    rgb_url, depth_url, segmentation_url = URL_arr[1]
+    rgb_url, depth_url, segmentation_url = URL_arr[0]
     # rgb_url, depth_url, segmentation_url = R_URL_arr[1]
     print(rgb_url)
     print(depth_url)
