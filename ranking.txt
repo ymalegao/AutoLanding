@@ -1,0 +1,7 @@
+```json
+[
+    {"position": "Best", "grid": "B3", "type": "ROOFTOP", "reason": "The rooftop of the B3 building, no hazards."},
+    {"position": "Second Best", "grid": "C2", "type": "ROOFTOP", "reason": "The rooftop of the C2 building, partially clear."},
+    {"position": "Third Best", "grid": "E3", "type": "ROOFTOP", "reason": "Flat, accessible rooftop with minor debris."}
+]
+```

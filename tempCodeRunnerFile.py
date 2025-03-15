@@ -1,5 +1,0 @@
-print("RGB Analysis Ranking:", rgb_ranking)
-# print("Depth Analysis Ranking:", depth_ranking)
-# print("Segmentation Analysis Ranking:", segmentation_ranking)
-# print("\nFinal Decision:")
-# print(final_decision.choices[0].message.content.strip())

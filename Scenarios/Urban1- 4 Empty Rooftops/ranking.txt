@@ -1,0 +1,14 @@
+To determine the safest landing zones, I'll analyze each section based on the images:
+
+- **Rooftops**: 
+  - **B2, D2** (large, open, and free of hazards)
+  - **C4** (relatively clear)
+  - **E3** (available rooftop)
+
+- **Hazards**:
+  - **C3, D3** (presence of lights indicating potential hazards)
+  - **A3, B3** (unknown structures, possible obstacles)
+
+Based on prioritizing rooftops and avoiding hazards:
+
+["D2", "B2", "C4", "E3", "D3", "C3", "A3", "B3", "A1", "A2", "A4", "A5", "B1", "B4", "B5", "C1", "C2", "C5", "D1", "D4", "D5", "E1", "E2", "E4", "E5"]

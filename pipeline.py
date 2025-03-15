@@ -4,9 +4,9 @@ import os
 import json
 from itertools import product
 
-GRID_SIZE = 5
-ROWS = "ABCDE"
-COLS = "12345"
+GRID_SIZE = 7
+ROWS = "ABCDEFG"
+COLS = "1234567"
 GRID_LABELS = [f"{row}{col}" for row, col in product(ROWS, COLS)]
 
 print(GRID_LABELS)
@@ -105,6 +105,6 @@ for scenario in os.listdir("scenarios"):
         rgb_path = os.path.join(scenario_dir, "rgb.png")
         depth_path = os.path.join(scenario_dir, "depth.png")
         segmentation_path = os.path.join(scenario_dir, "segmentation.png")
-        output_dir = os.path.join(scenario_dir, "output")
+        output_dir = os.path.join(scenario_dir, "output_7")
         main(rgb_path, depth_path, segmentation_path, output_dir)
 
