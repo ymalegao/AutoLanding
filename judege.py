@@ -12,7 +12,7 @@ currIndex = 0
 def raw_url_generator(scenario_name):
     #make sure to add %20 for spaces in the scenario name
     scen_name_with_space = scenario_name.replace(" ", "%20")
-    urls =[f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output/rgb_labeled.png", f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output/depth_labeled.png", f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output/segmentation_labeled.png"]
+    urls =[f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/rgb_labeled.png", f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/depth_labeled.png", f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/segmentation_labeled.png"]
     return urls
 
 
@@ -108,7 +108,7 @@ for scenario in rural_Scenario_names:
 URBAN_PROMPT = """A quadcopter needs to perform an emergency landing in an urban environment.
 You are provided three images - a Depth Map, a Camera Image, and a Segmentation Map.
 
-The images are divided into a **5×5 grid (A1 to E5)**.
+The images are divided into a **7×7 grid (A7 to G7)**.
 
 ### **Decision Process (MUST FOLLOW THIS ORDER)**:
 1. **Camera Image (Identify Rooftops)**

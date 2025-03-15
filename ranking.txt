@@ -1,7 +1,7 @@
 ```json
 [
-    {"position": "Best", "grid": "B3", "type": "ROOFTOP", "reason": "The rooftop of the B3 building, no hazards."},
-    {"position": "Second Best", "grid": "C2", "type": "ROOFTOP", "reason": "The rooftop of the C2 building, partially clear."},
-    {"position": "Third Best", "grid": "E3", "type": "ROOFTOP", "reason": "Flat, accessible rooftop with minor debris."}
+    {"position": "Best", "grid": "C4", "type": "ROOFTOP", "reason": "The rooftop of the C4 building, no hazards."},
+    {"position": "Second Best", "grid": "F3", "type": "ROOFTOP", "reason": "The rooftop of the F3 building, some debris but mostly clear."},
+    {"position": "Third Best", "grid": "D3", "type": "ROOFTOP", "reason": "Flat rooftop with some dirt, but no major hazards."}
 ]
 ```
