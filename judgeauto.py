@@ -21,7 +21,7 @@ def raw_url_generator(scenario_name):
     scen_name_with_space = scenario_name.replace(" ", "%20")
     urls = [
         f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/rgb_labeled.png",
-        f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/depth_labeled.png",
+        f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/color_depth_labeled.png",
         f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/segmentation_labeled.png"
     ]
     return urls
@@ -37,8 +37,9 @@ The images are divided into a **7×7 grid (A1 to G7)**.
 - Use the segmentation map to identify buildings that are suitable for landing.
 - Use the camera image to detect obstacles or hazards.
 - Use the depth map to prioritize **closer rooftops**.
-- **ONLY rooftops are valid** landing spots.
+- **ONLY rooftops are valid** landing spots, you may NOT land on the ground.
 - **If no safe rooftops exist, return "NO SAFE LANDING SPOT".**
+- **Make sure to look at the entire image to determine the best landing spot.**
 
 **Output Format:**
 [
@@ -70,7 +71,7 @@ def extract_grid_locations(response_text):
     return re.findall(pattern, response_text)
 
 # Create CSV file
-csv_filename = "landing_zone_results.csv"
+csv_filename = "landing_zone_results_with_color.csv"
 with open(csv_filename, "w", newline="") as csvfile:
     csv_writer = csv.writer(csvfile)
     csv_writer.writerow(["Scenario", "Best Spot", "Second Best", "Third Best", "Full Response"])  # CSV Header
@@ -131,33 +132,37 @@ print(f"✅ Results saved to {csv_filename}")
 
 
 
-URBAN_PROMPT = """A quadcopter needs to perform an emergency landing in an urban environment.
-You are provided one Camera Image.
-The image is divided into a **7×7 grid (A1 to G7)**.
+# URBAN_PROMPT = """A quadcopter needs to perform an emergency landing in an urban environment.
+# You are provided one Camera Image.
+# The image is divided into a **7×7 grid (A1 to G7)**.
 
-- Use the camera image to detect obstacles or hazards and the safest landing zone.
-- **ONLY rooftops are valid** landing spots.
-- **If no safe rooftops exist, return "NO SAFE LANDING SPOT".**
+# - Use the camera image to detect obstacles or hazards and the safest landing zone.
+# - **ONLY rooftops are valid** landing spots, you may NOT land on the ground.
+# - **If no safe rooftops exist, return "NO SAFE LANDING SPOT".**
 
-**Output Format:**
-[
-    {"position": "Best", "grid": "B3", "type": "ROOFTOP", "reason": "Flat and clear rooftop."},
-    {"position": "Second Best", "grid": "C2", "type": "ROOFTOP", "reason": "Mostly clear rooftop."},
-    {"position": "Third Best", "grid": "D1", "type": "ROOFTOP", "reason": "Accessible with minor debris."}
-]
-"""
+# **Output Format:**
+# [
+#     {"position": "Best", "grid": "B3", "type": "ROOFTOP", "reason": "Flat and clear rooftop."},
+#     {"position": "Second Best", "grid": "C2", "type": "ROOFTOP", "reason": "Mostly clear rooftop."},
+#     {"position": "Third Best", "grid": "D1", "type": "ROOFTOP", "reason": "Accessible with minor debris."}
+# ]
+# """
 
-RURAL_PROMPT = """A quadcopter needs to perform an emergency landing in a rural environment.
-You are provided one Camera image. 
-The images are divided into a **7×7 grid (A1 to G7)**.
+# #-**Make sure to look at the entire image to determine the best landing spot.** 
+# #this line is new in the prompt
 
-- Use the camera image to detect hazards (water, cliffs, trees, animals) and the safest landing zone.
-- **If no safe landing zones exist, return "NO SAFE LANDING SPOT".**
+# RURAL_PROMPT = """A quadcopter needs to perform an emergency landing in a rural environment.
+# You are provided one Camera image. 
+# The images are divided into a **7×7 grid (A1 to G7)**.
 
-**Output Format:**
-[
-    {"position": "Best", "grid": "B3", "type": "Flat Ground", "reason": "Flat open ground with no obstacles."},
-    {"position": "Second Best", "grid": "G3", "type": "Flat Ground", "reason": "Mostly clear area."},
-    {"position": "Third Best", "grid": "D1", "type": "Road", "reason": "Accessible but less ideal."}
-]
-"""
+# - Use the camera image to detect hazards (water, cliffs, trees, animals) and the safest landing zone.
+# - **If no safe landing zones exist, return "NO SAFE LANDING SPOT".**
+# - **Make sure to look at the entire image to determine the best landing spot.**
+
+# **Output Format:**
+# [
+#     {"position": "Best", "grid": "B3", "type": "Flat Ground", "reason": "Flat open ground with no obstacles."},
+#     {"position": "Second Best", "grid": "G3", "type": "Flat Ground", "reason": "Mostly clear area."},
+#     {"position": "Third Best", "grid": "D1", "type": "Road", "reason": "Accessible but less ideal."}
+# ]
+# """
