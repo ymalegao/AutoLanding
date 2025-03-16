@@ -57,18 +57,6 @@ def save_labeled_images(rgb, depth, segmentation, output_dir):
     cv2.imwrite(os.path.join(output_dir, "depth_labeled.png"), depth)
     cv2.imwrite(os.path.join(output_dir, "segmentation_labeled.png"), segmentation)
 
-def generate_llm_input(grid_rgb, grid_depth, grid_segmentation):
-    """Generates JSON for the LLM sensor fusion system."""
-    llm_data = {}
-    
-    for key in GRID_LABELS:
-        llm_data[key] = {
-            "rgb_patch": "(RGB Image Reference)",  # Replace with actual image references if needed
-            "depth_info": np.mean(grid_depth[key]),  # Avg depth for landing safety estimation
-            "segmentation_objects": "(Segmented Objects List)"  # Placeholder
-        }
-    
-    return llm_data
 
 def main(rgb_path, depth_path, segmentation_path, output_dir):
     # Load images
@@ -93,6 +81,11 @@ def main(rgb_path, depth_path, segmentation_path, output_dir):
     
     print(f"Processing complete! Outputs saved in {output_dir}")
 
+def make_grid_for_colored_depth_map(colored_path, output_dir):
+    colored_depth_map = cv2.imread(colored_path)
+    grid_colored_depth_map = overlay_grid_labels(colored_depth_map, GRID_SIZE, "depth")
+    cv2.imwrite(os.path.join(output_dir, "color_depth_labeled.png"), grid_colored_depth_map)
+
 # Example Usage
 # main("scene.png", "depth_map1.png", "segmentation.png", "output")
 
@@ -106,5 +99,7 @@ for scenario in os.listdir("scenarios"):
         depth_path = os.path.join(scenario_dir, "depth.png")
         segmentation_path = os.path.join(scenario_dir, "segmentation.png")
         output_dir = os.path.join(scenario_dir, "output_7")
-        main(rgb_path, depth_path, segmentation_path, output_dir)
+        # main(rgb_path, depth_path, segmentation_path, output_dir)
+        colored_depth_path = os.path.join(scenario_dir, "depth_map_colored.png")
+        make_grid_for_colored_depth_map(colored_depth_path, output_dir)
 

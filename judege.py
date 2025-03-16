@@ -106,42 +106,51 @@ for scenario in rural_Scenario_names:
 
 
 URBAN_PROMPT = """A quadcopter needs to perform an emergency landing in an urban environment.
-You are provided three images - a Camera Image,  a Segmentation Map, and a Depth Map,
+You are provided three images -  a Segmentation Map, camera Image, and a Depth Map,
 
 The images are divided into a **7×7 grid (A7 to G7)**.
+Use the segmentation map to identify buildings that you would be able to land on. 
+Use the camera image to identify obstacles or hazards in the scene. 
+Use the depth map to prioritize closer rooftops.
+Use the grid system to reference locations in the images
 
-### **Decision Process (MUST FOLLOW THIS ORDER)**:
-1. **Camera Image (Identify Rooftops)**
-   - **The camera image is the ONLY source used to identify rooftops.**
-   - Look for **flat, unobstructed surfaces on top of buildings.**
-   - **DO NOT use the depth map or segmentation map to assume a location is a rooftop.**
-   - If a location is inside a building or on its vertical walls, **ignore it**.
-
-2. **Segmentation Map (Confirm Building Areas)**
-   - Use the segmentation map to **confirm** that a selected rooftop belongs to a building.
-   - **DO NOT assume all parts of a building are rooftops.** Only those confirmed by the camera image should be considered.
-
-3. **Depth Map (Prioritize Closest Rooftops)**
-   - Once rooftops are identified using the camera, use the depth map to prioritize **closer rooftops**.
-   - **Ignore depth for any locations that are not already verified as rooftops.**
-
-4. **Hazard Check (Camera Image)**
-   - Use the **camera image** to check for **fire, debris, or people.**
-   - **If a rooftop has a safe section, rank that section instead of eliminating the whole rooftop.**
-
-### **Rules**:
-- **DO NOT assume a location is a rooftop just because it is part of a building.**
+**Rules**:
+You must land on a safe rooftop. 
 - **DO NOT land on the ground or open spaces.** Only rooftops are valid.
+If a coordinate is close to a safe building, say the rooftop of the XY building.
 - **If no safe rooftops exist, return "NO SAFE LANDING SPOT".**
-- **If a safe rooftop exists, say "the rooftop of the B3 building" instead of just "B3".**
-
-### **Output Format (Follow This Exactly)**:
+**Output Format (Follow This Exactly)**:
 [
     {"position": "Best", "grid": "B3", "type": "ROOFTOP", "reason": "The rooftop of the B3 building, no hazards."},
     {"position": "Second Best", "grid": "C2", "type": "ROOFTOP", "reason": "The rooftop of the C2 building, partially clear."},
     {"position": "Third Best", "grid": "D1", "type": "ROOFTOP", "reason": "Flat, accessible rooftop with minor debris."}
 ]
 """
+
+
+RURAL_PROMPT = """A quadcopter needs to perform an emergency landing in an rural environment.
+You are provided three images -  a Segmentation Map, camera Image, and a Depth Map,
+
+The images are divided into a **7×7 grid (A7 to G7)**.
+Use the segmentation map to identify any safe piece of ground that you would be able to land on. 
+Use the camera image to identify obstacles or hazards in the scene. 
+Use the depth map to prioritize closer ground.
+Use the grid system to reference locations in the images
+
+**Rules**:
+You must land on safe ground (no water, vegitation, animals). 
+- If the coordinate is between two safe zones, say **"Open ground near A1 and A2"**.
+- **If no safe ground exists, return "NO SAFE LANDING SPOT".**
+- **Avoid landing near bodies of water, cliffs, roads, or dense vegetation.**
+
+**Output Format (Follow This Exactly)**:
+[
+    {"position": "Best", "grid": "B3", "type": "Flat Ground", "reason": "The ground is flat, no hazards near by."},
+    {"position": "Second Best", "grid": "G3", "type": "Flat Ground", "reason": "Your reasoning here."},
+    {"position": "Third Best", "grid": "D1", "type": "Road", "reason": "Flat, accessible road"}
+]
+"""
+
 
 RURAL_PROMPT = """A quadcopter needs to perform an emergency landing in a rural environment.
 You are provided three images -  one camera image,one Depth map, and one infrared/segmentation.
@@ -172,19 +181,19 @@ The images are divided into a 5×5 grid (A1 to E5).
     
 # # Extract and print results
 if __name__ == "__main__":
-    rgb_url, depth_url, segmentation_url = URL_arr[0]
-    # rgb_url, depth_url, segmentation_url = R_URL_arr[1]
+    # rgb_url, depth_url, segmentation_url = URL_arr[1]
+    rgb_url, depth_url, segmentation_url = R_URL_arr[0]
     print(rgb_url)
     print(depth_url)
     print(segmentation_url)
     response = client.chat.completions.create(
     model="gpt-4o",  # Supports vision
     messages=[
-        {"role": "system", "content": URBAN_PROMPT},
+        {"role": "system", "content": RURAL_PROMPT},
         {"role": "user", "content": [
             {"type": "image_url", "image_url": {"url": segmentation_url}},
-            {"type": "image_url", "image_url": {"url": depth_url}},
-            {"type": "image_url", "image_url": {"url": rgb_url}}
+            {"type": "image_url", "image_url": {"url": rgb_url}},
+            {"type": "image_url", "image_url": {"url": depth_url}}
             ]}
     ]
     )

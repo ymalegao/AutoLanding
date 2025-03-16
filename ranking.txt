@@ -1,5 +1,7 @@
+```json
 [
-    {"position": "Best", "grid": "B3", "type": "ROOFTOP", "reason": "The rooftop of the B3 building, no hazards."},
-    {"position": "Second Best", "grid": "E2", "type": "ROOFTOP", "reason": "The rooftop of the E2 building, no hazards."},
-    {"position": "Third Best", "grid": "B5", "type": "ROOFTOP", "reason": "Flat, accessible rooftop with minor debris."}
+    {"position": "Best", "grid": "A2", "reason": "Flat open ground with no obstacles."},
+    {"position": "Second Best", "grid": "G7", "reason": "Mostly clear and open area with minimal vegetation."},
+    {"position": "Third Best", "grid": "F7", "reason": "Relatively open area with minor obstructions."}
 ]
+```
