@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load the RGB image
-image = cv2.imread("./RealLifeScenario/realLife.JPG")  # Change to your image path
+image = cv2.imread("./RealLifeScenario/rgb.png")  # Change to your image path
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB (OpenCV loads in BGR)
 
 # Convert to grayscale (simulating IR detection of intensity)
@@ -27,4 +27,4 @@ plt.axis("off")
 plt.show()
 
 # Save the infrared image
-cv2.imwrite("infrared_output.jpg", infrared_image)
+cv2.imwrite("infrared_output.png", infrared_image)

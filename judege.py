@@ -15,16 +15,30 @@ def raw_url_generator(scenario_name):
     urls =[f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/rgb_labeled.png", f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/color_depth_labeled.png", f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/segmentation_labeled.png"]
     return urls
 
+def real_life_raw_url_generator(scenario_name):
+    #make sure to add %20 for spaces in the scenario name
+    scen_name_with_space = scenario_name.replace(" ", "%20")
+    urls =[f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/RealLifeScenario/output_7/rgb_labeled.png", f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/RealLifeScenario/output_7/color_depth_labeled.png", f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/RealLifeScenario/output_7/segmentation_labeled.png"]
+    return urls
+
 
 URL_arr = []
 
 R_URL_arr = []
+
+RL_URL_arr = []
 
 for scenario in urban_scenario_names:
     URL_arr.append(raw_url_generator(scenario))
 
 for scenario in rural_Scenario_names:
     R_URL_arr.append(raw_url_generator(scenario))
+
+RL_URL_arr.append(real_life_raw_url_generator("RealLifeScenario"))
+
+# print(RL_URL_arr[0][0])
+# print(RL_URL_arr[0][1])
+# print(RL_URL_arr[0][2])
 
 # print(URL_arr[0])   
 
@@ -166,29 +180,24 @@ The image is divided into a **7×7 grid (A1 to G7)**.
 # """
 
 
-
-
 RURAL_PROMPT = """A quadcopter needs to perform an emergency landing in a rural environment.
-You are provided three images -  one camera image,one Depth map, and one infrared/segmentation.
+You are provided three images - a Segmentation Map, Camera Image, and a Depth Map.
+The images are divided into a **7×7 grid (A1 to G7)**.
+- Use the segmentation map to identify safe ground.
+- Use the camera image to detect hazards (water, cliffs, trees, animals).
+- Use the depth map to prioritize **closer ground**.
+- **If no safe landing zones exist, return "NO SAFE LANDING SPOT".**
+- **You CAN select multiple coordinates in the same zone IF AND ONLY IF all selected areas are completely clear.**
 
-The images are divided into a 5×5 grid (A1 to E5).
-**Your Task:**
-- Identify hazards (water, cliffs, trees, dense vegetation, rocks, or animals) in each section.
-- Rank the safest landing zones, prioritizing **flat, open ground** with **minimal obstacles**.
-- **Avoid landing near bodies of water, cliffs, roads, or dense vegetation.**
-- **Do NOT land on roads unless they are the only safe option.**
-- If the coordinate is between two safe zones, say **"Open ground near A1 and A2"**.
-- **If no safe landing spots exist, return "NO SAFE LANDING SPOT".**
-- **For each ranking, provide a reason for selection.**
 
 **Output Format:**
 [
-    {"position": "Best", "grid": "C3", "reason": "Flat open ground with no obstacles."},
-    {"position": "Second Best", "grid": "D2", "reason": "Mostly clear ground, small rocks nearby but still safe."},
-    {"position": "Third Best", "grid": "E1", "reason": "Open area, minor vegetation nearby."},
-    {"position": "NO SAFE LANDING SPOT", "reason": "All locations have water, cliffs, or dense trees."}
+    {"position": "Best", "grid": "B3", "type": "Flat Ground", "reason": "Flat open ground with no obstacles."},
+    {"position": "Second Best", "grid": "G3", "type": "Flat Ground", "reason": "Mostly clear area."},
+    {"position": "Third Best", "grid": "D1", "type": "Road", "reason": "Accessible but less ideal."}
 ]
 """
+
 
 
 # Make API call with all three images at once
@@ -197,15 +206,16 @@ The images are divided into a 5×5 grid (A1 to E5).
     
 # # Extract and print results
 if __name__ == "__main__":
-    rgb_url, depth_url, segmentation_url = URL_arr[2]
+    # rgb_url, depth_url, segmentation_url = URL_arr[2]
     # rgb_url, depth_url, segmentation_url = R_URL_arr[0]
+    rgb_url, depth_url, segmentation_url = RL_URL_arr[0]
     print(rgb_url)
     print(depth_url)
     print(segmentation_url)
     response = client.chat.completions.create(
     model="gpt-4o",  # Supports vision
     messages=[
-        {"role": "system", "content": URBAN_PROMPT},
+        {"role": "system", "content": RURAL_PROMPT},
         {"role": "user", "content": [
             {"type": "image_url", "image_url": {"url": segmentation_url}},
             {"type": "image_url", "image_url": {"url": rgb_url}},
