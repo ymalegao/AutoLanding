@@ -36,9 +36,9 @@ def overlay_grid_labels(image, grid_size, imageName):
     if "depth" in imageName:
         color = (255, 255, 255)
     if "segmentation" in imageName:
-        color = (0, 0, 0)
+        color = (255, 255, 255)
     if "rgb" in imageName:
-        color = (0, 0, 0)
+        color = (255, 255, 255)
 
     h, w = image.shape[:2]
     patch_h, patch_w = h // grid_size, w // grid_size
@@ -46,7 +46,17 @@ def overlay_grid_labels(image, grid_size, imageName):
     for i, (row, col) in enumerate(product(range(grid_size), range(grid_size))):
         x, y = col * patch_w + patch_w // 3, row * patch_h + patch_h // 2
         #black text for RBG and segmentation, white text for depth
-        cv2.putText(labeled_image, GRID_LABELS[i], (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2, cv2.LINE_AA)
+        segment_text_size = 3
+        rgb_text_size = 3
+        depth_text_size = 1
+        if "depth" in imageName:
+            cv2.putText(labeled_image, GRID_LABELS[i], (x, y), cv2.FONT_HERSHEY_SIMPLEX, depth_text_size, color, 2, cv2.LINE_AA)
+        if "segmentation" in imageName:
+            #bold text for segmentation
+            cv2.putText(labeled_image, GRID_LABELS[i], (x, y), cv2.FONT_HERSHEY_SIMPLEX, segment_text_size, color, 6, cv2.LINE_AA)
+        if "rgb" in imageName:
+            cv2.putText(labeled_image, GRID_LABELS[i], (x, y), cv2.FONT_HERSHEY_SIMPLEX, rgb_text_size, color, 6, cv2.LINE_AA)
+        #cv2.putText(labeled_image, GRID_LABELS[i], (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2, cv2.LINE_AA)
     
     return labeled_image
 
@@ -61,8 +71,11 @@ def save_labeled_images(rgb, depth, segmentation, output_dir):
 def main(rgb_path, depth_path, segmentation_path, output_dir):
     # Load images
     rgb = load_image(rgb_path)
+    print(rgb.shape)
     depth = load_image(depth_path)
+    print(depth.shape)
     segmentation = load_image(segmentation_path)
+    print(segmentation.shape)
 
     # Split into grid
     grid_rgb = split_image_into_grid(rgb, GRID_SIZE)
@@ -71,6 +84,7 @@ def main(rgb_path, depth_path, segmentation_path, output_dir):
 
     # Overlay labels
     labeled_rgb = overlay_grid_labels(rgb, GRID_SIZE, "rgb")
+    print(labeled_rgb.shape)
     labeled_depth = overlay_grid_labels(depth, GRID_SIZE, "depth")
     labeled_segmentation = overlay_grid_labels(segmentation, GRID_SIZE, "segmentation")
     
@@ -92,14 +106,24 @@ def make_grid_for_colored_depth_map(colored_path, output_dir):
 #open scenarios folder
 #for each folder in scenarios, open the folder, get the rgb, depth, and segmentation images, and run the main function, save the output in the output folder in the same scenario folder
 
-for scenario in os.listdir("scenarios"):
-    scenario_dir = os.path.join("scenarios", scenario)
-    if os.path.isdir(scenario_dir):
-        rgb_path = os.path.join(scenario_dir, "rgb.png")
-        depth_path = os.path.join(scenario_dir, "depth.png")
-        segmentation_path = os.path.join(scenario_dir, "segmentation.png")
-        output_dir = os.path.join(scenario_dir, "output_7")
-        # main(rgb_path, depth_path, segmentation_path, output_dir)
-        colored_depth_path = os.path.join(scenario_dir, "depth_map_colored.png")
-        make_grid_for_colored_depth_map(colored_depth_path, output_dir)
+# for scenario in os.listdir("scenarios"):
+#     scenario_dir = os.path.join("scenarios", scenario)
+#     if os.path.isdir(scenario_dir):
+#         rgb_path = os.path.join(scenario_dir, "rgb.png")
+#         depth_path = os.path.join(scenario_dir, "depth.png")
+#         segmentation_path = os.path.join(scenario_dir, "segmentation.png")
+#         output_dir = os.path.join(scenario_dir, "output_7")
+#         # main(rgb_path, depth_path, segmentation_path, output_dir)
+#         colored_depth_path = os.path.join(scenario_dir, "depth_map_colored.png")
+#         make_grid_for_colored_depth_map(colored_depth_path, output_dir)
+    
+
+dir_path = "RealLifeScenario"
+rgb_path = os.path.join(dir_path, "rgb.png")
+print(rgb_path)
+depth_path = os.path.join(dir_path, "depth_map_colored.png")
+segmentation_path = os.path.join(dir_path, "segmentation.png")
+output_dir = os.path.join(dir_path, "output_7")
+main(rgb_path, depth_path, segmentation_path, output_dir)
+make_grid_for_colored_depth_map(depth_path, output_dir)
 

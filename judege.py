@@ -12,7 +12,7 @@ currIndex = 0
 def raw_url_generator(scenario_name):
     #make sure to add %20 for spaces in the scenario name
     scen_name_with_space = scenario_name.replace(" ", "%20")
-    urls =[f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/rgb_labeled.png", f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/depth_labeled.png", f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/segmentation_labeled.png"]
+    urls =[f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/rgb_labeled.png", f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/color_depth_labeled.png", f"https://raw.githubusercontent.com/ymalegao/AutoLanding/main/Scenarios/{scen_name_with_space}/output_7/segmentation_labeled.png"]
     return urls
 
 
@@ -106,50 +106,66 @@ for scenario in rural_Scenario_names:
 
 
 URBAN_PROMPT = """A quadcopter needs to perform an emergency landing in an urban environment.
-You are provided three images -  a Segmentation Map, camera Image, and a Depth Map,
-
-The images are divided into a **7×7 grid (A7 to G7)**.
-Use the segmentation map to identify buildings that you would be able to land on. 
-Use the camera image to identify obstacles or hazards in the scene. 
-Use the depth map to prioritize closer rooftops.
-Use the grid system to reference locations in the images
-
-**Rules**:
-You must land on a safe rooftop. 
-- **DO NOT land on the ground or open spaces.** Only rooftops are valid.
-If a coordinate is close to a safe building, say the rooftop of the XY building.
+You are provided three images - a Segmentation Map, Camera Image, and a Depth Map.
+The images are divided into a **7×7 grid (A1 to G7)**.
+- Use the segmentation map to identify buildings that are suitable for landing.
+- Use the camera image to detect obstacles or hazards.
+- Use the depth map to prioritize **closer rooftops**.
+- **ONLY rooftops are valid** landing spots
 - **If no safe rooftops exist, return "NO SAFE LANDING SPOT".**
-**Output Format (Follow This Exactly)**:
+**Output Format:**
 [
-    {"position": "Best", "grid": "B3", "type": "ROOFTOP", "reason": "The rooftop of the B3 building, no hazards."},
-    {"position": "Second Best", "grid": "C2", "type": "ROOFTOP", "reason": "The rooftop of the C2 building, partially clear."},
-    {"position": "Third Best", "grid": "D1", "type": "ROOFTOP", "reason": "Flat, accessible rooftop with minor debris."}
+    {"position": "Best", "grid": "B3", "type": "ROOFTOP", "reason": "Flat and clear rooftop."},
+    {"position": "Second Best", "grid": "C2", "type": "ROOFTOP", "reason": "Mostly clear rooftop."},
+    {"position": "Third Best", "grid": "D1", "type": "ROOFTOP", "reason": "Accessible with minor debris."}
 ]
 """
 
 
-RURAL_PROMPT = """A quadcopter needs to perform an emergency landing in an rural environment.
-You are provided three images -  a Segmentation Map, camera Image, and a Depth Map,
 
-The images are divided into a **7×7 grid (A7 to G7)**.
-Use the segmentation map to identify any safe piece of ground that you would be able to land on. 
-Use the camera image to identify obstacles or hazards in the scene. 
-Use the depth map to prioritize closer ground.
-Use the grid system to reference locations in the images
+SINGLE_CAM_URBAN_PROMPT = """A quadcopter needs to perform an emergency landing in an urban environment.
+You are provided one Camera Image.
+The image is divided into a **7×7 grid (A1 to G7)**.
 
-**Rules**:
-You must land on safe ground (no water, vegitation, animals). 
-- If the coordinate is between two safe zones, say **"Open ground near A1 and A2"**.
-- **If no safe ground exists, return "NO SAFE LANDING SPOT".**
-- **Avoid landing near bodies of water, cliffs, roads, or dense vegetation.**
+- Use the camera image to detect obstacles or hazards and the safest landing zone.
+- **ONLY rooftops are valid** landing spots.
+- **If no safe rooftops exist, return "NO SAFE LANDING SPOT".**
+- **You CAN select multiple coordinates on the same rooftop IF AND ONLY IF all selected areas are completely clear.**
 
-**Output Format (Follow This Exactly)**:
+**Output Format:**
 [
-    {"position": "Best", "grid": "B3", "type": "Flat Ground", "reason": "The ground is flat, no hazards near by."},
-    {"position": "Second Best", "grid": "G3", "type": "Flat Ground", "reason": "Your reasoning here."},
-    {"position": "Third Best", "grid": "D1", "type": "Road", "reason": "Flat, accessible road"}
+    {"position": "Best", "grid": "B3", "type": "ROOFTOP", "reason": "Flat and clear rooftop."},
+    {"position": "Second Best", "grid": "C2", "type": "ROOFTOP", "reason": "Mostly clear rooftop."},
+    {"position": "Third Best", "grid": "D1", "type": "ROOFTOP", "reason": "Accessible with minor debris."}
 ]
 """
+
+# URBAN_PROMPT = """A quadcopter needs to perform an emergency landing in an urban environment.
+# You are provided three images - a Segmentation Map, Camera Image, and a Depth Map.
+# The images are divided into a 7×7 grid (A1 to G7).
+
+# Strict Landing Rules (Follow EXACTLY):
+# You MUST land on a rooftop. No exceptions.  
+# You CANNOT land in open areas, streets, plazas, parks, or the ground. 
+# If no safe rooftops exist, return ONLY "NO SAFE LANDING SPOT".
+
+# How to Rank Landing Zones:
+# Use the segmentation map to identify **buildings with flat rooftops. Ignore non-building areas.
+# Use the camera image to check for hazards like fire, debris, or people.
+# Use the depth map to prioritize rooftops that are closer for faster & safer landing.
+
+# Strict Output Format:
+# [
+#     {"position": "Best", "grid": "B3", "type": "ROOFTOP", "reason": "Flat and clear rooftop, no obstacles."},
+#     {"position": "Second Best", "grid": "C2", "type": "ROOFTOP", "reason": "Mostly clear rooftop, minor debris."},
+#     {"position": "Third Best", "grid": "D1", "type": "ROOFTOP", "reason": "Accessible rooftop, some minor obstructions."}
+# ]
+
+# If no valid rooftops exist, return ONLY this exact response:
+# ["NO SAFE LANDING SPOT"]
+# """
+
+
 
 
 RURAL_PROMPT = """A quadcopter needs to perform an emergency landing in a rural environment.
@@ -181,15 +197,15 @@ The images are divided into a 5×5 grid (A1 to E5).
     
 # # Extract and print results
 if __name__ == "__main__":
-    # rgb_url, depth_url, segmentation_url = URL_arr[1]
-    rgb_url, depth_url, segmentation_url = R_URL_arr[0]
+    rgb_url, depth_url, segmentation_url = URL_arr[2]
+    # rgb_url, depth_url, segmentation_url = R_URL_arr[0]
     print(rgb_url)
     print(depth_url)
     print(segmentation_url)
     response = client.chat.completions.create(
     model="gpt-4o",  # Supports vision
     messages=[
-        {"role": "system", "content": RURAL_PROMPT},
+        {"role": "system", "content": URBAN_PROMPT},
         {"role": "user", "content": [
             {"type": "image_url", "image_url": {"url": segmentation_url}},
             {"type": "image_url", "image_url": {"url": rgb_url}},
