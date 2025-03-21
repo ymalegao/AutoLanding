@@ -124,7 +124,7 @@ You are provided three images - a Segmentation Map, Camera Image, and a Depth Ma
 The images are divided into a **7×7 grid (A1 to G7)**.
 - Use the segmentation map to identify buildings that are suitable for landing.
 - Use the camera image to detect obstacles or hazards.
-- Use the depth map to prioritize **closer rooftops**.
+- Use the depth map to prioritize **closer rooftops**. Lighter areas are closer.
 - **ONLY rooftops are valid** landing spots
 - **If no safe rooftops exist, return "NO SAFE LANDING SPOT".**
 **Output Format:**
@@ -132,7 +132,11 @@ The images are divided into a **7×7 grid (A1 to G7)**.
     {"position": "Best", "grid": "B3", "type": "ROOFTOP", "reason": "Flat and clear rooftop."},
     {"position": "Second Best", "grid": "C2", "type": "ROOFTOP", "reason": "Mostly clear rooftop."},
     {"position": "Third Best", "grid": "D1", "type": "ROOFTOP", "reason": "Accessible with minor debris."}
-]
+    Describe in detail what you got from each image:
+    Segmentation: "write here"
+    Camera Image: "write here"
+    Depth Map: "write here"
+    ]
 """
 
 
@@ -151,7 +155,9 @@ The image is divided into a **7×7 grid (A1 to G7)**.
     {"position": "Best", "grid": "B3", "type": "ROOFTOP", "reason": "Flat and clear rooftop."},
     {"position": "Second Best", "grid": "C2", "type": "ROOFTOP", "reason": "Mostly clear rooftop."},
     {"position": "Third Best", "grid": "D1", "type": "ROOFTOP", "reason": "Accessible with minor debris."}
-]
+    Describe in detail what you got from each image:
+    Camera Image: "write here"
+    ]
 """
 
 # URBAN_PROMPT = """A quadcopter needs to perform an emergency landing in an urban environment.
@@ -178,23 +184,45 @@ The image is divided into a **7×7 grid (A1 to G7)**.
 # If no valid rooftops exist, return ONLY this exact response:
 # ["NO SAFE LANDING SPOT"]
 # """
+# -**You cannot land on grass, but any UNOBSTRUCTED orange landing circle is a valid landing spot.**
 
 
-RURAL_PROMPT = """A quadcopter needs to perform an emergency landing in a rural environment.
+RURAL_PROMPT = """A quadcopter needs to perform an emergency landing. You are not allowed to land in grass.
 You are provided three images - a Segmentation Map, Camera Image, and a Depth Map.
 The images are divided into a **7×7 grid (A1 to G7)**.
 - Use the segmentation map to identify safe ground.
-- Use the camera image to detect hazards (water, cliffs, trees, animals).
+- Use the camera image to detect hazards (people, trees, animals).
 - Use the depth map to prioritize **closer ground**.
 - **If no safe landing zones exist, return "NO SAFE LANDING SPOT".**
 - **You CAN select multiple coordinates in the same zone IF AND ONLY IF all selected areas are completely clear.**
-
 
 **Output Format:**
 [
     {"position": "Best", "grid": "B3", "type": "Flat Ground", "reason": "Flat open ground with no obstacles."},
     {"position": "Second Best", "grid": "G3", "type": "Flat Ground", "reason": "Mostly clear area."},
     {"position": "Third Best", "grid": "D1", "type": "Road", "reason": "Accessible but less ideal."}
+]
+    What you got from each image:
+    Segmentation: "write here"
+    Camera Image: "write here"
+    Depth Map: "write here"
+
+"""
+
+SINGLE_RURAL_PROMPT = """A quadcopter needs to perform an emergency landing. You cannot land in grass
+You are provided  a  Camera Image.
+The image is divided into a **7×7 grid (A1 to G7)**.
+- Use the camera image to detect hazards (people, trees, animals).
+- **If no safe landing zones exist, return "NO SAFE LANDING SPOT".**
+- **You CAN select multiple coordinates in the same zone IF AND ONLY IF all selected areas are completely clear.**
+
+**Output Format:**
+[
+    {"position": "Best", "grid": "B3", "type": "Flat Ground", "reason": "Flat open ground with no obstacles."},
+    {"position": "Second Best", "grid": "G3", "type": "Flat Ground", "reason": "Mostly clear area."},
+    {"position": "Third Best", "grid": "D1", "type": "Road", "reason": "Accessible but less ideal."}
+    What you got from each image:
+    Camera Image: "write here"
 ]
 """
 
@@ -206,20 +234,20 @@ The images are divided into a **7×7 grid (A1 to G7)**.
     
 # # Extract and print results
 if __name__ == "__main__":
-    # rgb_url, depth_url, segmentation_url = URL_arr[2]
+    rgb_url, depth_url, segmentation_url = URL_arr[4]
     # rgb_url, depth_url, segmentation_url = R_URL_arr[0]
-    rgb_url, depth_url, segmentation_url = RL_URL_arr[0]
+    # rgb_url, depth_url, segmentation_url = RL_URL_arr[0]
     print(rgb_url)
     print(depth_url)
     print(segmentation_url)
     response = client.chat.completions.create(
     model="gpt-4o",  # Supports vision
     messages=[
-        {"role": "system", "content": RURAL_PROMPT},
+        {"role": "system", "content": SINGLE_CAM_URBAN_PROMPT},
         {"role": "user", "content": [
-            {"type": "image_url", "image_url": {"url": segmentation_url}},
+            # {"type": "image_url", "image_url": {"url": segmentation_url}},
             {"type": "image_url", "image_url": {"url": rgb_url}},
-            {"type": "image_url", "image_url": {"url": depth_url}}
+            # {"type": "image_url", "image_url": {"url": depth_url}}
             ]}
     ]
     )

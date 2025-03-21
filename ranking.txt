@@ -1,5 +1,0 @@
-[
-    {"position": "Best", "grid": "C5", "type": "ROOFTOP", "reason": "Flat and clear rooftop."},
-    {"position": "Second Best", "grid": "E3", "type": "ROOFTOP", "reason": "Mostly clear rooftop with minor debris."},
-    {"position": "Third Best", "grid": "B4", "type": "ROOFTOP", "reason": "Some obstacles but accessible."}
-]
